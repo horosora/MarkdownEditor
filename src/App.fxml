@@ -17,7 +17,7 @@
               <MenuItem mnemonicParsing="false" text="New" />
               <MenuItem mnemonicParsing="false" text="Open" onAction="#fileOpen" />
               <MenuItem mnemonicParsing="false" text="Save" />
-              <MenuItem mnemonicParsing="false" text="Save as" />
+              <MenuItem mnemonicParsing="false" text="Save as" onAction="#fileSaveAa" />
               <MenuItem mnemonicParsing="false" text="Exit" onAction="#appExit" />
             </items>
           </Menu>
@@ -32,7 +32,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" text="About"  onAction="#about"/>
             </items>
           </Menu>
         </menus>

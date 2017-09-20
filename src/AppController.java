@@ -17,18 +17,28 @@ public class AppController {
 
     @FXML
     public void fileOpen(Event e){
-        FileChooser fc = new FileChooser();
-        fc.setTitle("File selection");
-        fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
-                                        new FileChooser.ExtensionFilter("All Files", "*.*"));
+        FileChooser fileSelect = new FileChooser();
+        fileSelect.setTitle("File selection");
+        fileSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
+                                                new FileChooser.ExtensionFilter("All Files", "*.*"));
 
-        File importFile = fc.showOpenDialog(null);
+        File importFile = fileSelect.showOpenDialog(null);
 
     }
 
     @FXML
     public void appExit(Event e) {
         System.exit(0);
+    }
+
+    @FXML
+    public void fileSaveAa(Event e){
+        FileChooser saveSelect = new FileChooser();
+        saveSelect.setTitle("Select storage location");
+        saveSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
+                                                new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+        File importFile = saveSelect.showSaveDialog(null);
     }
 
     @FXML
