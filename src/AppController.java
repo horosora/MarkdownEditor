@@ -9,9 +9,8 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -40,9 +39,24 @@ public class AppController implements Initializable {
         fileSelect.setTitle("File selection");
         fileSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
                                                 new FileChooser.ExtensionFilter("All Files", "*.*"));
+        try{
+            File importFile = fileSelect.showOpenDialog(null);
+            FileReader filereader = new FileReader(importFile);
 
-        File importFile = fileSelect.showOpenDialog(null);
+            int ch;
+            String str = "";
+            while((ch = filereader.read()) != -1){
+                str += (char)ch;
+            }
 
+            textArea.setText(str);
+
+            filereader.close();
+        }catch(FileNotFoundException er){
+            System.out.println(er);
+        }catch(IOException er){
+            System.out.println(er);
+        }
     }
 
     @FXML
@@ -57,7 +71,6 @@ public class AppController implements Initializable {
         saveSelect.setTitle("Select storage location");
         saveSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
                                                 new FileChooser.ExtensionFilter("All Files", "*.*"));
-
         try{
             File saveFile = saveSelect.showSaveDialog(null);
             FileWriter filewriter = new FileWriter(saveFile);

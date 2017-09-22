@@ -12,6 +12,5 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="91.0" layoutY="166.0" prefHeight="30.0" prefWidth="149.0" text="Copyright © 2017 horosora" />
    </children>
 </Pane>
