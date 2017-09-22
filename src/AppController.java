@@ -9,12 +9,11 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import org.markdown4j.Markdown4jProcessor;
+
 
 public class AppController implements Initializable {
 
@@ -34,7 +33,12 @@ public class AppController implements Initializable {
     }
 
     @FXML
-    public void fileOpen(Event e){
+    public void newFile(Event e){
+        textArea.setText("");
+    }
+
+    @FXML
+    public void openFile(Event e){
         FileChooser fileSelect = new FileChooser();
         fileSelect.setTitle("File selection");
         fileSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
