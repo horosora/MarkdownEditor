@@ -19,6 +19,7 @@ public class AppController implements Initializable {
 
     @FXML private WebView webView;
     @FXML private TextArea textArea;
+    private File importFile;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -44,7 +45,7 @@ public class AppController implements Initializable {
         fileSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
                                                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         try{
-            File importFile = fileSelect.showOpenDialog(null);
+            this.importFile = fileSelect.showOpenDialog(null);
             FileReader filereader = new FileReader(importFile);
 
             int ch;
@@ -68,9 +69,19 @@ public class AppController implements Initializable {
         System.exit(0);
     }
 
+    @FXML
+    public void saveFile(Event e){
+        try{
+            FileWriter filewriter = new FileWriter(this.importFile);
+            filewriter.write(textArea.getText());
+            filewriter.close();
+        }catch(IOException er){
+            System.out.println(er);
+        }
+    }
 
     @FXML
-    public void fileSaveAa(Event e){
+    public void saveAaFile(Event e){
         FileChooser saveSelect = new FileChooser();
         saveSelect.setTitle("Select storage location");
         saveSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
@@ -91,7 +102,7 @@ public class AppController implements Initializable {
         Scene scene = new Scene(root, 330, 220);
         Stage Stage = new Stage();
         Stage.setScene(scene);
-        Stage.setTitle("USME");
+        Stage.setTitle("MarkdownEditor");
         Stage.initModality(Modality.APPLICATION_MODAL);   //閉じるまで操作禁止
         Stage.setResizable(false);   //リサイズ禁止
         Stage.show();
