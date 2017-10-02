@@ -1,5 +1,6 @@
 //TODO: TextAreaとWebViewの表示位置を同期させる
 //TODO: ファイル読み込みをドラッグ＆ドロップで出来るようにする
+//TODO: 保存しないで終了しようとしたときに警告を出す
 
 
 import javafx.event.Event;
@@ -24,8 +25,9 @@ public class AppController implements Initializable {
     @FXML private WebView webView;
     @FXML private TextArea textArea;
     private File importFilePath;
-    private String originalFile;
+    private File tmpPath;
 
+    //TextAreaの変化を検知してWevViewに表示
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -38,15 +40,14 @@ public class AppController implements Initializable {
         });
     }
 
+    //新しいファイルの作成
     @FXML
     public void newFile(Event e) {
-        if(originalFile == null){
-            this.importFilePath = null;
-        } else {
-            System.out.println("hoge");
-        }
+        this.importFilePath = null;
+        textArea.setText("");
     }
 
+    //ファイルを開く
     @FXML
     public void openFile(Event e) {
         FileChooser fileSelect = new FileChooser();
@@ -55,44 +56,39 @@ public class AppController implements Initializable {
                                                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         this.importFilePath = fileSelect.showOpenDialog(null);
 
-        if(this.importFilePath != null) {
-            try{
-                FileReader filereader = new FileReader(this.importFilePath);
+        if(this.importFilePath != null && tmpPath != importFilePath) {
+            StringBuilder tmp = new StringBuilder();
 
-                int ch;
-                String str = "";
-                while((ch = filereader.read()) != -1){
-                    str += (char)ch;
+            try{
+                int readChar;
+                FileReader filereader = new FileReader(this.importFilePath);
+                while((readChar = filereader.read()) != -1){
+                    tmp.append((char)readChar);
                 }
                 filereader.close();
-                originalFile = str;
-                textArea.setText(str);
             }catch(IOException er){
                 System.exit(1);
             }
+
+            textArea.setText(tmp.toString());
+            this.tmpPath = this.importFilePath;
         }
     }
 
+    //ファイルを保存
     @FXML
     public void saveFile(Event e) {
         if(this.importFilePath == null) {
             FileChooser saveSelect = new FileChooser();
             saveSelect.setTitle("Select storage location");
             saveSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
-                    new FileChooser.ExtensionFilter("All Files", "*.*"));
+                                                    new FileChooser.ExtensionFilter("All Files", "*.*"));
             this.importFilePath = saveSelect.showSaveDialog(null);
         }
-        if(this.importFilePath != null){
-            try{
-                FileWriter filewriter = new FileWriter(this.importFilePath);
-                filewriter.write(textArea.getText());
-                filewriter.close();
-            }catch(IOException er){
-                System.exit(1);
-            }
-        }
+        writeToFile();
     }
 
+    //ファイルを別名で保存
     @FXML
     public void saveAaFile(Event e){
         FileChooser saveSelect = new FileChooser();
@@ -100,17 +96,10 @@ public class AppController implements Initializable {
         saveSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
                                                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         this.importFilePath = saveSelect.showSaveDialog(null);
-        if(this.importFilePath != null){
-            try{
-                FileWriter filewriter = new FileWriter(this.importFilePath);
-                filewriter.write(textArea.getText());
-                filewriter.close();
-            }catch(IOException er){
-                System.exit(1);
-            }
-        }
+        writeToFile();
     }
 
+    //アプリケーションを終了する
     @FXML
     public void appExit(Event e) {
         System.exit(0);
@@ -119,12 +108,24 @@ public class AppController implements Initializable {
     @FXML
     public void about(Event e) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("About.fxml"));
-        Scene scene = new Scene(root, 330, 220);
+        Scene scene = new Scene(root, 300, 200);
         Stage Stage = new Stage();
         Stage.setScene(scene);
         Stage.setTitle("MarkdownEditor");
         Stage.initModality(Modality.APPLICATION_MODAL);
         Stage.setResizable(false);
         Stage.show();
+    }
+
+    public void writeToFile(){
+        if(this.importFilePath != null){
+            try{
+                FileWriter filewriter = new FileWriter(this.importFilePath);
+                filewriter.write(textArea.getText());
+                filewriter.close();
+            }catch(IOException er){
+                System.exit(1);
+            }
+        }
     }
 }

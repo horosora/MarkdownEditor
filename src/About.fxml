@@ -5,11 +5,11 @@
 <?import javafx.scene.text.Font?>
 
 
-<Pane>
+<Pane xmlns="http://javafx.com/javafx/8.0.111">
    <children>
-      <Label layoutX="12.0" layoutY="38.0" prefHeight="49.0" prefWidth="306.0" text="Ultra Simple Markdown Editor (USME)">
+      <Label layoutX="48.0" layoutY="35.0" prefHeight="130.0" prefWidth="204.0" text="Hello">
          <font>
-            <Font size="18.0" />
+            <Font size="88.0" />
          </font>
       </Label>
    </children>
