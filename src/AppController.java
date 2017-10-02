@@ -1,3 +1,7 @@
+//TODO: TextAreaとWebViewの表示位置を同期させる
+//TODO: ファイル読み込みをドラッグ＆ドロップで出来るようにする
+
+
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +23,8 @@ public class AppController implements Initializable {
 
     @FXML private WebView webView;
     @FXML private TextArea textArea;
-    private File importFile;
+    private File importFilePath;
+    private String originalFile;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -34,49 +39,57 @@ public class AppController implements Initializable {
     }
 
     @FXML
-    public void newFile(Event e){
-        textArea.setText("");
-    }
-
-    @FXML
-    public void openFile(Event e){
-        FileChooser fileSelect = new FileChooser();
-        fileSelect.setTitle("File selection");
-        fileSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
-                                                new FileChooser.ExtensionFilter("All Files", "*.*"));
-        try{
-            this.importFile = fileSelect.showOpenDialog(null);
-            FileReader filereader = new FileReader(importFile);
-
-            int ch;
-            String str = "";
-            while((ch = filereader.read()) != -1){
-                str += (char)ch;
-            }
-
-            textArea.setText(str);
-
-            filereader.close();
-        }catch(FileNotFoundException er){
-            System.out.println(er);
-        }catch(IOException er){
-            System.out.println(er);
+    public void newFile(Event e) {
+        if(originalFile == null){
+            this.importFilePath = null;
+        } else {
+            System.out.println("hoge");
         }
     }
 
     @FXML
-    public void appExit(Event e) {
-        System.exit(0);
+    public void openFile(Event e) {
+        FileChooser fileSelect = new FileChooser();
+        fileSelect.setTitle("File selection");
+        fileSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
+                                                new FileChooser.ExtensionFilter("All Files", "*.*"));
+        this.importFilePath = fileSelect.showOpenDialog(null);
+
+        if(this.importFilePath != null) {
+            try{
+                FileReader filereader = new FileReader(this.importFilePath);
+
+                int ch;
+                String str = "";
+                while((ch = filereader.read()) != -1){
+                    str += (char)ch;
+                }
+                filereader.close();
+                originalFile = str;
+                textArea.setText(str);
+            }catch(IOException er){
+                System.exit(1);
+            }
+        }
     }
 
     @FXML
-    public void saveFile(Event e){
-        try{
-            FileWriter filewriter = new FileWriter(this.importFile);
-            filewriter.write(textArea.getText());
-            filewriter.close();
-        }catch(IOException er){
-            System.out.println(er);
+    public void saveFile(Event e) {
+        if(this.importFilePath == null) {
+            FileChooser saveSelect = new FileChooser();
+            saveSelect.setTitle("Select storage location");
+            saveSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
+                    new FileChooser.ExtensionFilter("All Files", "*.*"));
+            this.importFilePath = saveSelect.showSaveDialog(null);
+        }
+        if(this.importFilePath != null){
+            try{
+                FileWriter filewriter = new FileWriter(this.importFilePath);
+                filewriter.write(textArea.getText());
+                filewriter.close();
+            }catch(IOException er){
+                System.exit(1);
+            }
         }
     }
 
@@ -86,14 +99,21 @@ public class AppController implements Initializable {
         saveSelect.setTitle("Select storage location");
         saveSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
                                                 new FileChooser.ExtensionFilter("All Files", "*.*"));
-        try{
-            File saveFile = saveSelect.showSaveDialog(null);
-            FileWriter filewriter = new FileWriter(saveFile);
-            filewriter.write(textArea.getText());
-            filewriter.close();
-        }catch(IOException er){
-            System.out.println(er);
+        this.importFilePath = saveSelect.showSaveDialog(null);
+        if(this.importFilePath != null){
+            try{
+                FileWriter filewriter = new FileWriter(this.importFilePath);
+                filewriter.write(textArea.getText());
+                filewriter.close();
+            }catch(IOException er){
+                System.exit(1);
+            }
         }
+    }
+
+    @FXML
+    public void appExit(Event e) {
+        System.exit(0);
     }
 
     @FXML
@@ -103,8 +123,8 @@ public class AppController implements Initializable {
         Stage Stage = new Stage();
         Stage.setScene(scene);
         Stage.setTitle("MarkdownEditor");
-        Stage.initModality(Modality.APPLICATION_MODAL);   //閉じるまで操作禁止
-        Stage.setResizable(false);   //リサイズ禁止
+        Stage.initModality(Modality.APPLICATION_MODAL);
+        Stage.setResizable(false);
         Stage.show();
     }
 }
