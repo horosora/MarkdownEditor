@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 import org.markdown4j.Markdown4jProcessor;
 
 
-public class AppController implements Initializable {
+public class AppController implements Initializable{
 
     @FXML private WebView webView;
     @FXML private TextArea textArea;
@@ -29,12 +29,12 @@ public class AppController implements Initializable {
 
     //TextAreaの変化を検知してWevViewに表示
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources){
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 webView.getEngine().loadContent(new Markdown4jProcessor().process(newValue));
             }
-            catch (StringIndexOutOfBoundsException | IOException e) {
+            catch (StringIndexOutOfBoundsException | IOException e){
                 webView.getEngine().loadContent(newValue);
             }
         });
@@ -42,21 +42,21 @@ public class AppController implements Initializable {
 
     //新しいファイルの作成
     @FXML
-    public void newFile(Event e) {
+    public void newFile(Event e){
         this.importFilePath = null;
         textArea.setText("");
     }
 
     //ファイルを開く
     @FXML
-    public void openFile(Event e) {
+    public void openFile(Event e){
         FileChooser fileSelect = new FileChooser();
         fileSelect.setTitle("File selection");
         fileSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
                                                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         this.importFilePath = fileSelect.showOpenDialog(null);
 
-        if(this.importFilePath != null && tmpPath != importFilePath) {
+        if(this.importFilePath != null && tmpPath != importFilePath){
             StringBuilder tmp = new StringBuilder();
 
             try{
@@ -77,8 +77,8 @@ public class AppController implements Initializable {
 
     //ファイルを保存
     @FXML
-    public void saveFile(Event e) {
-        if(this.importFilePath == null) {
+    public void saveFile(Event e){
+        if(this.importFilePath == null){
             FileChooser saveSelect = new FileChooser();
             saveSelect.setTitle("Select storage location");
             saveSelect.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("markdown file", "*.md"),
@@ -101,12 +101,12 @@ public class AppController implements Initializable {
 
     //アプリケーションを終了する
     @FXML
-    public void appExit(Event e) {
+    public void appExit(Event e){
         System.exit(0);
     }
 
     @FXML
-    public void about(Event e) throws Exception {
+    public void about(Event e) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("About.fxml"));
         Scene scene = new Scene(root, 300, 200);
         Stage Stage = new Stage();
